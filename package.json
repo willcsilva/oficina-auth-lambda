@@ -1,0 +1,25 @@
+{
+  "name": "oficina-auth-lambda",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/willcsilva/oficina-auth-lambda.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/willcsilva/oficina-auth-lambda/issues"
+  },
+  "homepage": "https://github.com/willcsilva/oficina-auth-lambda#readme",
+  "dependencies": {
+    "jsonwebtoken": "^9.0.3",
+    "pg": "^8.20.0"
+  }
+}
