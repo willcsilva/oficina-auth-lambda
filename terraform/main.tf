@@ -83,8 +83,6 @@ resource "aws_security_group" "lambda_sg" {
 # 3. FUNÇÃO LAMBDA
 # ==============================================================================
 
-# Criamos um ZIP vazio só pro Terraform conseguir provisionar o recurso inicial.
-# O código real será injetado pelo GitHub Actions depois.
 data "archive_file" "dummy_zip" {
   type        = "zip"
   output_path = "${path.module}/dummy.zip"
@@ -101,20 +99,13 @@ resource "aws_lambda_function" "auth" {
   handler       = "index.handler"
   filename      = data.archive_file.dummy_zip.output_path
 
-  # Isso obriga o Terraform a DESTRUIR o API Gateway ANTES de mexer na Lambda
-  depends_on = [
-    aws_apigatewayv2_route.auth_route,
-    aws_apigatewayv2_integration.lambda_integration,
-    aws_apigatewayv2_api.http_api
-  ]
-
-  # Coloca a Lambda nas mesmas subnets privadas do banco
+  # REMOVIDO O DEPENDS_ON DAQUI para quebrar o ciclo infinito.
+  
   vpc_config {
     subnet_ids         = data.terraform_remote_state.network.outputs.private_subnets
     security_group_ids = [aws_security_group.lambda_sg.id]
   }
 
-  # Variáveis de ambiente dinâmicas
   environment {
     variables = {
       DB_HOST     = data.terraform_remote_state.db.outputs.db_instance_address
@@ -127,7 +118,7 @@ resource "aws_lambda_function" "auth" {
 }
 
 # ==============================================================================
-# 4. API GATEWAY (Gera a URL pública para chamar a Lambda)
+# 4. API GATEWAY
 # ==============================================================================
 
 resource "aws_apigatewayv2_api" "http_api" {
@@ -139,7 +130,9 @@ resource "aws_apigatewayv2_integration" "lambda_integration" {
   api_id           = aws_apigatewayv2_api.http_api.id
   integration_type = "AWS_PROXY"
   integration_method = "POST"
-  integration_uri    = aws_lambda_function.auth.arn 
+  
+  # Usamos o invoke_arn. O Terraform gerencia a destruição aqui naturalmente.
+  integration_uri    = aws_lambda_function.auth.invoke_arn 
   payload_format_version = "2.0"
 }
 
@@ -158,13 +151,17 @@ resource "aws_apigatewayv2_stage" "default" {
 resource "aws_lambda_permission" "api_gw_permission" {
   statement_id  = "AllowExecutionFromAPIGateway"
   action        = "lambda:InvokeFunction"
-  function_name = aws_lambda_function.auth.function_name # Referência simples
+  function_name = aws_lambda_function.auth.function_name
   principal     = "apigateway.amazonaws.com"
   source_arn    = "${aws_apigatewayv2_api.http_api.execution_arn}/*/*"
 
+  # ADICIONADO AQUI: Isso força o Terraform a tratar a permissão 
+  # como o elo de ligação, permitindo que ele destrua a rota antes da função.
+  depends_on = [
+    aws_apigatewayv2_route.auth_route
+  ]
 }
 
-# Imprime a URL final no terminal para você usar no Front-end!
 output "api_endpoint" {
   value = "${aws_apigatewayv2_api.http_api.api_endpoint}/auth"
 }
