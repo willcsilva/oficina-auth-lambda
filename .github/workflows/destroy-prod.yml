@@ -1,0 +1,46 @@
+name: "Destroy Auth Lambda (Produção)"
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirmar_destroy:
+        description: 'ATENÇÃO: Marque a caixa para confirmar a DESTRUIÇÃO da Lambda e do API Gateway na AWS'
+        required: true
+        type: boolean
+        default: false
+
+jobs:
+  destroy:
+    name: "Terraform Destroy"
+    runs-on: ubuntu-latest
+    # A esteira só continua se a caixinha for marcada na hora do disparo manual
+    if: inputs.confirmar_destroy == true
+
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_REGION: "us-east-2"
+      
+      # O Terraform exige as mesmas variáveis do deploy para conseguir ler o state e destruir
+      TF_VAR_db_username: ${{ secrets.DB_USERNAME }}
+      TF_VAR_db_password: ${{ secrets.DB_PASSWORD }}
+      TF_VAR_db_name: "db_oficina" 
+      TF_VAR_jwt_secret: ${{ secrets.JWT_SECRET }}
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.8.5"
+          terraform_wrapper: false
+
+      - name: Terraform Init
+        working-directory: ./terraform
+        run: terraform init -upgrade
+
+      - name: Terraform Destroy
+        working-directory: ./terraform
+        run: terraform destroy -auto-approve -input=false
