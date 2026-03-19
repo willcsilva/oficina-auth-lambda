@@ -161,6 +161,11 @@ resource "aws_lambda_permission" "api_gw_permission" {
   function_name = aws_lambda_function.auth.function_name
   principal     = "apigateway.amazonaws.com"
   source_arn    = "${aws_apigatewayv2_api.http_api.execution_arn}/*/*"
+
+  depends_on = [
+    aws_apigatewayv2_route.auth_route,
+    aws_apigatewayv2_api.http_api
+  ]
 }
 
 # Imprime a URL final no terminal para você usar no Front-end!
