@@ -101,6 +101,13 @@ resource "aws_lambda_function" "auth" {
   handler       = "index.handler"
   filename      = data.archive_file.dummy_zip.output_path
 
+  # Isso obriga o Terraform a DESTRUIR o API Gateway ANTES de mexer na Lambda
+  depends_on = [
+    aws_apigatewayv2_route.auth_route,
+    aws_apigatewayv2_integration.lambda_integration,
+    aws_apigatewayv2_api.http_api
+  ]
+
   # Coloca a Lambda nas mesmas subnets privadas do banco
   vpc_config {
     subnet_ids         = data.terraform_remote_state.network.outputs.private_subnets
