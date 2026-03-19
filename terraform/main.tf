@@ -108,7 +108,7 @@ resource "aws_lambda_function" "auth" {
 
   environment {
     variables = {
-      DB_HOST     = data.terraform_remote_state.db.outputs.db_instance_address
+      #DB_HOST     = data.terraform_remote_state.db.outputs.db_instance_address
       DB_USER     = var.db_username
       DB_PASSWORD = var.db_password
       DB_NAME     = var.db_name
