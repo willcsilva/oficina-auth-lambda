@@ -62,6 +62,12 @@ jobs:
         working-directory: ./terraform
         run: terraform init
 
+      - name: Criar dummy.zip falso (Workaround Terraform)
+        working-directory: ./terraform
+        run: |
+          echo "dummy" > dummy.txt
+          zip dummy.zip dummy.txt
+
       - name: Terraform Format
         working-directory: ./terraform
         run: terraform fmt
@@ -130,6 +136,12 @@ jobs:
       - name: Terraform Init
         working-directory: ./terraform
         run: terraform init
+
+      - name: Criar dummy.zip falso (Workaround Terraform)
+        working-directory: ./terraform
+        run: |
+          echo "dummy" > dummy.txt
+          zip dummy.zip dummy.txt
 
       - name: Terraform Apply
         working-directory: ./terraform
