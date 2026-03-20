@@ -98,9 +98,7 @@ resource "aws_lambda_function" "auth" {
   runtime       = "nodejs18.x"
   handler       = "index.handler"
   filename      = data.archive_file.dummy_zip.output_path
-
-  # REMOVIDO O DEPENDS_ON DAQUI para quebrar o ciclo infinito.
-  
+ 
   vpc_config {
     subnet_ids         = data.terraform_remote_state.network.outputs.private_subnets
     security_group_ids = [aws_security_group.lambda_sg.id]
