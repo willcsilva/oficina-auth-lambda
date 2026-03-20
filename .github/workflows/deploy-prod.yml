@@ -7,13 +7,13 @@ on:
     branches: [ "main" ]
   
   # A NOSSA TRAVA DE SEGURANÇA (GATILHO MANUAL)
-  workflow_dispatch: 
-    inputs:
-      executar_apply:
-        description: 'ATENÇÃO: Marque para executar o Terraform APPLY e DEPLOY na AWS'
-        required: true
-        type: boolean
-        default: false
+  # workflow_dispatch: 
+  #   inputs:
+  #     executar_apply:
+  #       description: 'ATENÇÃO: Marque para executar o Terraform APPLY e DEPLOY na AWS'
+  #       required: true
+  #       type: boolean
+  #       default: false
 
 # Variáveis Globais de Produção
 env:
