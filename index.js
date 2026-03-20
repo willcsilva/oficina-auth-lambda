@@ -16,7 +16,11 @@ exports.handler = async (event) => {
         user: process.env.DB_USER,         // Ex: postgres
         password: process.env.DB_PASSWORD, // Senha do RDS
         database: process.env.DB_NAME,     // Ex: oficinadb
-        port: 5432
+        port: 5432,
+        // CORREÇÃO: Habilitando SSL para o RDS não rejeitar a conexão da Lambda
+        ssl: {
+            rejectUnauthorized: false
+        }
     });
 
     try {
