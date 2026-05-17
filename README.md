@@ -1,9 +1,9 @@
 # FIAP - Post Tech: Software Architecture (SOAT)
-## Projeto Oficina Mecânica - Fase 3 (SOAT/FIAP)
+## Projeto Oficina Mecânica - Fase  (SOAT/FIAP)
 
 **Autor:** William Crispin da Silva  
 **Contato:** [willcsilva15@gmail.com] | Discord: `@Crispin - RM369067` | `will1515` 
-**Grupo:** Grupo 40
+**Grupo:** Grupo 77
 
 ---
 
