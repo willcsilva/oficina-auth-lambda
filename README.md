@@ -8,10 +8,7 @@
 ---
 
 ## 📋 Cenário e Problema
-Com a expansão da oficina para múltiplas unidades e o aumento
-constante na base de clientes, tornou-se necessário garantir segurança,
-escalabilidade e alta disponibilidade, além de obter visibilidade total sobre o
-funcionamento do sistema
+A oficina mecânica atingiu escala nacional e agora opera com múltiplas filiais. O volume de ordens de serviço, interações entre áreas (atendimento, diagnóstico, execução e cobrança), necessidade de resiliência e tolerância a falhas aumentaram consideravelmente. Para sustentar essa operação, a aplicação precisa ser refatorada para um modelo distribuído, com microsserviços independentes e especializados. Além disso, é necessário garantir consistência entre as transações críticas (como criação de ordens de serviço, aprovações e pagamentos), aplicando o Saga Pattern para coordenar processos distribuídos com rollback seguro em caso de falhas.
 
 🎯 Soluções e Arquitetura
 Para atender às novas exigências da direção, o sistema foi redesenhado entregando as seguintes capacidades:
